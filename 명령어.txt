@@ -67,7 +67,7 @@ nohup python -u make_NER_ids_label.py > make_NER_ids_label.py_21.10.28-1.log &
 nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.29-1.log &
 nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.29-2.log &
 nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.30-1.log &
-nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.11.02-1.log & # 위에꺼는 키워드 길이 내림차순 정렬이 안되어 있었음 ㅠㅜ 
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.11.02-1.log & # 위에꺼는 키워드 길이 내림차순 정렬이 안되어 있었음
 nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.11.06-1.log &
 nohup python -u make_NER_ids_label_rev_index_1107.py > make_NER_ids_label_rev_index_1107.py_21.11.07-1.log & # 일반적인 단어 정제함
 
