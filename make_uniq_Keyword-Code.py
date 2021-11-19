@@ -159,13 +159,13 @@ for keyword, code in tqdm(zip(keywords, codes), total = len(codes)):
         each_keywords.append(word)
         each_codes.append(code[:4])
         
-set_codes = set(each_codes)
-print("code 개수 : ", len(set_codes))
+no_dup_codes = list(dict.fromkeys(each_codes))
+print("code 개수 : ", len(no_dup_codes))
 print("code list")
-print(set_codes)
+print(no_dup_codes)
 
 # ner_to_index.json 파일 만들기
-uniq_code = set_codes
+uniq_code = no_dup_codes
 ner_to_index = ['[CLS]']
 ner_to_index.append('[SEP]')
 ner_to_index.append('[PAD]')
@@ -180,7 +180,7 @@ for ner in ner_to_index:
     set_ner_to_index[ner] = idx
     idx += 1
 
-file_name = "ner_to_index_rev_1115.json"
+file_name = "ner_to_index_rev_1118.json"
 with open(file_name, "w") as json_file:
     json.dump(set_ner_to_index, json_file)
 # ner_to_index.json 파일 만들기 끝
@@ -194,68 +194,73 @@ print("중복 제거 전 키워드 개수 : ", len(df_eachKey_eachCode)) # 82545
 uniq_keywords = list(set(df_eachKey_eachCode['each_keyword'])) # 중복없는 키워드들
 print("중복 없는 키워드 개수 : ", len(uniq_keywords)) # 232410
 
-dict_keyword_freqdist = {}
-for keyword in tqdm(df_eachKey_eachCode['each_keyword']):
-    list_keywords = list(df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == keyword]['each_code'])
-    freqdist = nltk.FreqDist(list_keywords)
-    dict_keyword_freqdist[keyword] = freqdist
+# # 키워드에 매핑된 분류코드 사전 만들기
+# dict_keyword_freqdist = {}
+# for keyword in tqdm(df_eachKey_eachCode['each_keyword']):
+#     list_keywords = list(df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == keyword]['each_code'])
+#     freqdist = nltk.FreqDist(list_keywords)
+#     dict_keyword_freqdist[keyword] = freqdist
 
-file_name = "dict_keyword_freqdist_1115.json"
-with open(file_name, "w") as json_file:
-    json.dump(dict_keyword_freqdist, json_file)
+# file_name = "dict_keyword_freqdist_1118.json"
+# with open(file_name, "w") as json_file:
+#     json.dump(dict_keyword_freqdist, json_file)
     
-list_keyword = []
-list_len_freqdist = []
-for keyword in tqdm(df_eachKey_eachCode['each_keyword']):
-    list_keyword.append(keyword)
-    list_len_freqdist.append(len(dict_keyword_freqdist[keyword]))
+# list_keyword = []
+# list_len_freqdist = []
+# for keyword in tqdm(df_eachKey_eachCode['each_keyword']):
+#     list_keyword.append(keyword)
+#     list_len_freqdist.append(len(dict_keyword_freqdist[keyword]))
     
-df_keyword_code_freq = pd.DataFrame({"keyword" : list_keyword, "freq" : list_len_freqdist})
-df_keyword_code_freq = df_keyword_code_freq.drop_duplicates('keyword')
-df_keyword_code_freq = df_keyword_code_freq.reset_index(drop=True)
+# df_keyword_code_freq = pd.DataFrame({"keyword" : list_keyword, "freq" : list_len_freqdist})
+# df_keyword_code_freq = df_keyword_code_freq.drop_duplicates('keyword')
+# df_keyword_code_freq = df_keyword_code_freq.reset_index(drop=True)
 
-file_name = "keyword-code_freq_1115.csv"
-df_keyword_code_freq.to_csv(file_name, index=False)
+# file_name = "keyword-code_freq_1118.csv"
+# df_keyword_code_freq.to_csv(file_name, index=False)
+# # 키워드에 매핑된 분류코드 사전 만들기 끝
+
+with open("dict_keyword_freqdist_1115.json", 'rb') as f:
+    dict_keyword_freqdist = json.load(f)
+df_keyword_code_freq = pd.read_csv('keyword-code_freq_1115.csv')
 
 # 중복 코드를 갖는 키워드는 빈도가 많은 코드로 태깅 + 반자동 정제 기준(by JN) 적용 
 temp_df = df_eachKey_eachCode[df_eachKey_eachCode.duplicated('each_keyword', keep=False)]
 list_uniq_keyword = []
 list_uniq_code = []
-for word in tqdm(uniq_keywords):
-    keyword_df = temp_df[temp_df['each_keyword'] == word]
+for keyword in tqdm(uniq_keywords):
+    keyword_df = temp_df[temp_df['each_keyword'] == keyword]
     if len(keyword_df) < 1: # 중복되는 키워드가 아니라면
 #         print(word)
         try:
-            key_code = df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == word].iloc[0]['each_code']
+            key_code = df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == keyword].iloc[0]['each_code']
         except:
-            print(word)
-            print(df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == word])
-        list_uniq_keyword.append(word)
+            print(keyword)
+            print(df_eachKey_eachCode[df_eachKey_eachCode['each_keyword'] == keyword])
+        list_uniq_keyword.append(keyword)
         list_uniq_code.append(key_code)
         continue
     set_code = {}
     for i in range(len(keyword_df)):
-        code = temp_df[temp_df['each_keyword'] == word].iloc[i]['each_code']
+        code = temp_df[temp_df['each_keyword'] == keyword].iloc[i]['each_code']
         if code not in set_code:
             set_code[code] = 0
         set_code[code] += 1
-#     key_code = sorted(set_code.items(), key=lambda item:-item[1])[0][0] # 정렬 시간이 꽤 잡아먹을듯... 수정이 필요해보임
-    key_code = max(list(set_code)) # 빈도 수가 같다면 코드의 알파벳이 알파벳 순서상 뒤에 오는 코드로 선택됨
+    key_code = sorted(set_code.items(), key=lambda item:-item[1])[0][0] # 정렬 시간이 꽤 잡아먹을듯... 수정이 필요해보임
 
-    freq = int(df_keyword_code_freq[df_keyword_code_freq['keyword']==word]['freq'])
+    freq = int(df_keyword_code_freq[df_keyword_code_freq['keyword']==keyword]['freq'])
     if freq <= 5: # 키워드에 대응되는 분류코드가 5개 이하라면 키워드로 인정
-        sort_code_freq = sorted(dict_keyword_freqdist[word].items(), key=lambda item:-item[1])
+        sort_code_freq = sorted(dict_keyword_freqdist[keyword].items(), key=lambda item:-item[1])
         if len(sort_code_freq) > 1:
             if sort_code_freq[0][1] >= 100: # 가장 큰 빈도수가 100개 이상이라면 키워드로 인정
                 if sort_code_freq[0][1] - sort_code_freq[1][1] > sort_code_freq[0][1]*0.1: # 빈도 수 1순위, 2순위의 차가 1순위의 10%보다 크면 키워드로 인정
-                    list_uniq_keyword.append(word)
+                    list_uniq_keyword.append(keyword)
                     list_uniq_code.append(key_code)
             else:
                 if sort_code_freq[0][1] - sort_code_freq[1][1] > 3: # 빈도 수 1순위, 2순위의 차가 3보다 크면 키워드로 인정
-                    list_uniq_keyword.append(word)
+                    list_uniq_keyword.append(keyword)
                     list_uniq_code.append(key_code)
         elif len(sort_code_freq) == 1:
-            list_uniq_keyword.append(word)
+            list_uniq_keyword.append(keyword)
             list_uniq_code.append(key_code)
 
     
@@ -269,7 +274,7 @@ for i in tqdm(range(len(df_summary))):
 df_summary = pd.DataFrame({"summary" : list(df_summary['summary']), "token_summary" : token_summarys, "mecab_summary" : mecab_summarys})
 print("df_summary 길이 : ", len(df_summary))
 
-file_name = "2014-2019_summary_1115.csv"
+file_name = "2014-2019_summary_1118.csv"
 print("{} 파일 저장".format(file_name))
 df_summary.to_csv(file_name, index=False)
 # 요약과 토큰화된 요약 데이터프레임 만들기 끝
@@ -293,7 +298,7 @@ df_uniq_key_code_token = df_uniq_key_code_token.sort_values(by=["keyword"],key=l
 df_uniq_key_code_token = df_uniq_key_code_token.reset_index(drop=True)
 print("df_uniq_key_code_token 길이 : ", len(df_uniq_key_code_token))
 
-file_name = "uniq_keywords, codes, uniq_token_keywords_1115.csv"
+file_name = "uniq_keywords, codes, uniq_token_keywords_1118.csv"
 print("{} 파일 저장".format(file_name))
 df_uniq_key_code_token.to_csv(file_name, index=False)
 # 키워드, 코드, 토큰화된 키워드 데이터프레임 만들기 끝
