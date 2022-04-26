@@ -14,11 +14,15 @@ from seqeval.metrics import classification_report as classification_report_seqev
 import tensorflow as tf
 from tensorflow import keras
 from transformers import TFElectraModel, TFBertModel
+from tensorflow.keras import Model
 from tensorflow.keras.layers import LSTM, Embedding, Dense, TimeDistributed, Dropout, Bidirectional, Activation, Lambda, Input
 from tf2crf import CRF, ModelWithCRFLoss
 
 import argparse
 import time
+
+from konlpy.tag import Mecab
+mecab = Mecab()
 
 def str2bool(v):
         if v.lower() in ('yes', 'true', 't', 'y', '1'):
@@ -30,6 +34,8 @@ def str2bool(v):
     
 parser = argparse.ArgumentParser(description='test')
 parser.add_argument(
+    '-mecab', help='insert whether apply meacb or not', default=False, type=bool)
+parser.add_argument(
     '-max_length', help='insert max length', default=256, type=int)
 parser.add_argument(
     '-lr', help='insert learning rate', default=5e-5, type=float)
@@ -38,30 +44,44 @@ parser.add_argument(
 parser.add_argument(
     '-data', help='insert data file name', default=None, type=str)
 parser.add_argument(
+    '-ner', help='insert ner to index file name', default=None, type=str)
+parser.add_argument(
     '-desc', help='insert description to model', default=None, type=str)
+parser.add_argument(
+    '-slicing', help='insert the number of slicing', default=-1, type=int)
+parser.add_argument(
+    '-top_K', help='insert the number of K', default=1, type=int)
 args = parser.parse_args()
     
 print('max_length : {}'.format(args.max_length))
 print('learning rate : {}'.format(args.lr))
 print('Desc : {}'.format(args.desc))
 print('Model : {}'.format(args.model))
+print('slicing : {}'.format(args.slicing))
+print('top K : {}'.format(args.top_K))
+print('data file : {}'.format(args.data))
+print('ner file : {}'.format(args.ner))
 
 MAX_LENGTH = args.max_length
 
-tokenizer = BertTokenizer.from_pretrained('vocab.txt', do_lower_case=False) # 기존 vocab
-# tokenizer = BertTokenizer.from_pretrained('../nscc_mecab_base_final/vocab.txt', do_lower_case=False) # 최신 vocab
-with open("ner_to_index_rev_1030.json", 'rb') as f:
+# tokenizer = BertTokenizer.from_pretrained('vocab.txt', do_lower_case=False) # 기존 vocab
+tokenizer = BertTokenizer.from_pretrained('wpm-vocab-all.txt', do_lower_case=False) # NTIS(2012-2019) + AIHUB 데이터로 만든 vocab(32000)
+
+with open(args.ner, 'rb') as f:
     ner_to_index = json.load(f)
 index_to_ner = {}
 for key, value in ner_to_index.items():
     index_to_ner[value] = key
     
 df_datas = pd.read_csv(args.data)
-# df_datas = pd.read_csv('NER_ids_label_rev_index_1030.csv')
-# df_datas = pd.read_csv('NER_ids_label_rev_index_1107.csv')
 
-x_data = df_datas['summary'].tolist()
-y_data = df_datas['NER_ids'].tolist()
+if args.slicing == -1:
+    x_data = df_datas['summary'].tolist()
+    y_data = df_datas['NER_ids'].tolist()
+else:
+    x_data = df_datas['summary'].tolist()[:args.slicing]
+    y_data = df_datas['NER_ids'].tolist()[:args.slicing]
+    
 for i in range(len(y_data)):
     y_data[i] = [int(i) for i in (y_data[i][1:-1].split())]
 str_y_data = df_datas['NER_label']
@@ -75,6 +95,7 @@ input_ids =[]
 attention_masks =[]
 token_type_ids =[]
 for line in tqdm(str_train_x):
+    line = ' '.join(mecab.morphs(line)) # mecab 적용, encode하면 tokenizer.tokenize 해준 것과 같은 결과 나옴
     encoded_dict = tokenizer.encode_plus(line, \
                                          add_special_tokens = True,\
                                          pad_to_max_length=True,\
@@ -141,15 +162,20 @@ if 'electra' in what_model:
     model.compile(
         optimizer=keras.optimizers.Adam(learning_rate=args.lr),
         loss = keras.losses.CategoricalCrossentropy(),
-        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=3)]
+        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=args.top_K)]
     )
 
-    checkpoint_filepath = "checkpoints/" + what_model + "_NER_" + args.desc + "/electra_{epoch:04d}.ckpt"
+    checkpoint_filepath = "checkpoints/" + what_model + "_NER_" + args.desc + "/" + what_model + "_{epoch:04d}.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_filepath)
     model.save_weights(checkpoint_filepath.format(epoch=0))
 
 elif 'bert' in what_model:
-    model = TFBertModel.from_pretrained('bert-base-multilingual-cased')
+    if what_model == 'bert':
+        model = TFBertModel.from_pretrained('bert-base-multilingual-cased')
+    elif what_model == 'korscibert':
+        model = TFBertModel.from_pretrained('../KorsciBert/torch_model', from_pt=True)
+    elif what_model == 'kluebert':
+        model = TFBertModel.from_pretrained('klue/bert-base', from_pt=True)
     bert_layers = model.get_layer('bert')
     input_layer = tf.keras.layers.Input(shape=(MAX_LENGTH,), dtype='int32') # [(None, 256)]
     bert_l = bert_layers(input_layer)[0]
@@ -175,13 +201,48 @@ elif 'bert' in what_model:
     model.compile(
         optimizer=keras.optimizers.Adam(learning_rate=args.lr),
         loss = keras.losses.CategoricalCrossentropy(),
-        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=3)]
+        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=args.top_K)]
     )
 
-    checkpoint_filepath = "checkpoints/" + what_model + "_NER_" + args.desc + "/electra_{epoch:04d}.ckpt"
+    checkpoint_filepath = "checkpoints/" + what_model + "_NER_" + args.desc + "/" + what_model + "_{epoch:04d}.ckpt"
     checkpoint_dir = os.path.dirname(checkpoint_filepath)
     model.save_weights(checkpoint_filepath.format(epoch=0))
 
+elif 'LSTM' in what_model:
+    embedding_dim = 768 ############### 
+    hidden_units = 768 ###############
+    dropout_ratio = 0.3
+
+    sequence_input = Input(shape=(MAX_LENGTH,),dtype=tf.int32, name='sequence_input')
+
+    model_embedding = Embedding(input_dim=vocab_size,
+                                output_dim=embedding_dim,
+                                input_length=MAX_LENGTH)(sequence_input)
+
+    model_bilstm = Bidirectional(LSTM(units=hidden_units, return_sequences=True))(model_embedding)
+
+    model_dropout = TimeDistributed(Dropout(dropout_ratio))(model_bilstm)
+
+    model_dense = TimeDistributed(Dense(tag_size, activation='relu'))(model_dropout)
+
+    crf = CRF(units=tag_size)
+    output_layer = crf(model_dense)
+
+    base = Model(inputs=sequence_input, outputs=output_layer)
+    print(base.summary())
+    model = ModelWithCRFLoss(base, sparse_target=True)
+    model.build(input_shape=(None, MAX_LENGTH))
+    print(model.summary())
+
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate=args.lr),
+        loss = keras.losses.CategoricalCrossentropy(),
+        metrics=['accuracy', tf.keras.metrics.TopKCategoricalAccuracy(k=args.top_K)]
+    )
+    
+    checkpoint_filepath = "checkpoints/" + what_model + "_NER_" + args.desc + "/" + what_model + "_{epoch:04d}.ckpt"
+    checkpoint_dir = os.path.dirname(checkpoint_filepath)
+    model.save_weights(checkpoint_filepath.format(epoch=0))
 
 callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss_val', patience=3)
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
@@ -210,6 +271,9 @@ input_ids =[]
 attention_masks =[]
 token_type_ids =[]
 for line in tqdm(str_test_x):
+#     if args.mecab:
+# #         line = mecab.morphs(line) # mecab 적용
+#         line = tokenizer.tokenize(' '.join(mecab.morphs(line))) # mecab 적용
     encoded_dict = tokenizer.encode_plus(line, \
                                          add_special_tokens = True,\
                                          pad_to_max_length=True,\
@@ -288,16 +352,18 @@ print("len report_test_y : ", len(report_test_y))
 print("type y_pred : ", type(y_pred))
 print("type y_pred[0] : ", type(y_pred[0]))
 
-report_file_name = 'report_NER_{model}_{desc}.txt'.format(model=args.model, desc=args.desc)
+report_file_name = 'NER/report/{model}/report_NER_{model}_{desc}.txt'.format(model=args.model, desc=args.desc)
 with open(report_file_name, 'w') as f:
 #         f.write(classification_report(test_y, np.array(pred_y), target_names=categories.keys()))
     f.write(classification_report(y_true=report_test_y, y_pred=report_y_pred, target_names=target_names, labels=label_index_to_print, digits=4))
     
-predict_file_name = 'predict_NER_{model}_{desc}.csv'.format(model=args.model, desc=args.desc)
+predict_file_name = 'NER/predict/{model}/predict_NER_{model}_{desc}.csv'.format(model=args.model, desc=args.desc)
 df_predict = pd.DataFrame({'input' : str_test_x, 'encode_input' : list_test_input_ids, 'target' : test_y, 'predict' : list_y_pred})
 df_predict.to_csv(predict_file_name, index=False)
     
-report_file_name = 'report_NER_code_{model}_{desc}.txt'.format(model=args.model, desc=args.desc)
+report_file_name = 'NER/report/{model}/report_NER_code_{model}_{desc}.txt'.format(model=args.model, desc=args.desc)
 with open(report_file_name, 'w') as f:
     f.write(classification_report_seqeval(y_true=report_test_y_code, y_pred=report_y_pred_code))
+
+print('example_NER-all_keyword.py 실행 끝')
     

@@ -1,0 +1,131 @@
+CUDA_VISIBLE_DEVICES=2 python train_NER.py 2>&1 | tee -a 21.10.20-1.log
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# 학습
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing 100000 -top_K 5 -desc 'ids_rev_22.3.2-2' > 22.3.2-2.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing 100000 -top_K 5 -desc 'ids_rev_22.3.2-3' > 22.3.2-3.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing 100000 -top_K 5 -desc 'ids_rev_22.3.2-4' > 22.3.2-4.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing 100000 -top_K 5 -desc 'ids_rev_22.3.2-5' > 22.3.2-5.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.3-1' > 22.3.3-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.4-1' > 22.3.4-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.4-2' > 22.3.4-2.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.4-3' > 22.3.4-3.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.4-4' > 22.3.4-4.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.5-1' > 22.3.5-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.5-2' > 22.3.5-2.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.5-3' > 22.3.5-3.log &
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.5-4' > 22.3.5-4.log &
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-1' > 22.3.6-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-2' > 22.3.6-2.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-3' > 22.3.6-3.log &
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-4' > 22.3.6-4.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-5' > 22.3.6-5.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-6' > 22.3.6-6.log &
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 8e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-7' > 22.3.6-7.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 8e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-8' > 22.3.6-8.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 8e-05 -data 'NER_ids_label_rev_index_220301.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.6-9' > 22.3.6-9.log &
+
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.7-1' > 22.3.7-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.7-2' > 22.3.7-2.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.7-3' > 22.3.7-3.log &
+
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.8-1' > 22.3.8-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.8-2' > 22.3.8-2.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -1 -top_K 5 -desc 'ids_rev_22.3.8-3' > 22.3.8-3.log &
+
+# 220306.csv, 220306.py 는 kluebert 실험용, kluebert가 사용한 토큰화 방법이 다르다고 해서 별개로 실험 진행 
+# morpheme based subword tokenization, 학습시에는 MeCab + WordPiece tokenization을 적용, 예측시에는 WordPiece tokenization만 적용
+# vocab 새로 만듬 (JN/NSCC/klueBERT_tokenizer/wpm-vocab-all.txt)
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220306.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing 100000 -top_K 5 -desc 'ids_rev_22.3.10-1' > 22.3.10-1.log &
+
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.10-2' > 22.3.10-2.log &
+
+CUDA_VISIBLE_DEVICES=0 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.11-1' > 22.3.11-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.11-2' > 22.3.11-2.log &
+
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.12-1' > NER_logs/22.3.12-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.12-2' > NER_logs/22.3.12-2.log &
+
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.13-1' > NER_logs/22.3.13-1.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.13-2' > NER_logs/22.3.13-2.log &
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.15-1' > NER_logs/22.3.15-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.15-2' > NER_logs/22.3.15-2.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.15-3' > NER_logs/22.3.15-3.log &
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 6e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.17-1' > NER_logs/22.3.17-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.17-2' > NER_logs/22.3.17-2.log &
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.18-1' > NER_logs/22.3.18-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.18-2' > NER_logs/22.3.18-2.log &
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'BiLSTM' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.19-1' > NER_logs/22.3.19-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 7e-05 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'kluebert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.19-2' > NER_logs/22.3.19-2.log &
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-06 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'bert' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.20-1' > NER_logs/22.3.20-1.log &
+CUDA_VISIBLE_DEVICES=2 nohup python -u train_NER.py -lr 5e-06 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'korscibert' -slicing -500000 -top_K 5 -desc 'ids_rev_22.3.20-2' > NER_logs/22.3.20-2.log & # 실행 도중 중단
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train_NER.py -lr 5e-06 -data 'NER_ids_label_rev_index_220227.csv' -ner 'ner_to_index_rev_220214.json' -mecab True -model 'electra_final' -slicing 500000 -top_K 5 -desc 'ids_rev_22.3.25-1' > NER_logs/22.3.25-1.log & # 실행 도중 중단
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# 키워드와 코드 매칭 데이터 만들기
+nohup python -u make_uniq_Keyword-Code.py > make_uniq_Keyword-Code.py_21.10.24-2.log &
+nohup python -u make_uniq_Keyword-Code.py > make_uniq_Keyword-Code.py_21.10.25-1.log &
+nohup python -u make_uniq_Keyword-Code_rev.py > make_uniq_Keyword-Code_rev.py_21.10.29-1.log &
+nohup python -u make_uniq_Keyword-Code_rev.py > make_uniq_Keyword-Code_rev.py_21.10.30-1.log &
+nohup python -u make_uniq_Keyword-Code_rev.py > make_uniq_Keyword-Code_rev.py_21.11.02-1.log &
+python make_uniq_Keyword-Code_rev_1112.py 2>&1 | tee -a make_uniq_Keyword-Code_rev.py_21.11.12-1.log 
+nohup python -u make_uniq_Keyword-Code_rev_1115.py > make_uniq_Keyword-Code_rev.py_21.11.15-1.log & # 반자동 정제 기준(by JN) 적용 (키워드 매핑 코드 오류가 있었음)
+nohup python -u make_uniq_Keyword-Code_rev_1118.py > make_uniq_Keyword-Code_rev.py_21.11.18-1.log & # 반자동 정제 기준(by JN) 적용 (키워드 매핑 코드 오류 수정 + ner to index 순서 고정)
+
+nohup python -u make_Keyword-Code_new_1127.py > make_Keyword-Code_new_1127.py_21.11.27-1.log & # 단어 사전 추가 (코드 오류)
+nohup python -u make_Keyword-Code-Freq_new_1128.py > make_Keyword-Code-Freq_new_1128.py_21.11.28-1.log & # 단어 사전 추가
+nohup python -u make_Keyword-Code-Freq_new_1128.py > make_Keyword-Code-Freq_new_1128.py_21.12.02-1.log & # 단어 사전 추가
+nohup python -u make_Keyword-Code-Freq_new_1128.py > make_Keyword-Code-Freq_new_1128.py_21.12.08-1.log & # 단어 사전 추가
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# 라벨링 텍스트 데이터 만들기
+nohup python -u make_NER_text_labelText.py > make_NER_text_labelText.py_21.10.24-1.log &
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# 타겟 데이터 만들기
+nohup python -u make_NER_ids_label.py > make_NER_ids_label.py_21.10.25-1.log &
+nohup python -u make_NER_ids_label.py > make_NER_ids_label.py_21.10.26-1.log &
+nohup python -u make_NER_ids_label.py > make_NER_ids_label.py_21.10.28-1.log &
+
+# 타겟 데이터 만들기 (인덱스를 활용하여 실행시간 줄임)
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.29-1.log &
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.29-2.log &
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.10.30-1.log &
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.11.02-1.log & # 위에꺼는 키워드 길이 내림차순 정렬이 안되어 있었음 
+nohup python -u make_NER_ids_label_rev_index.py > make_NER_ids_label_rev_index.py_21.11.06-1.log &
+nohup python -u make_NER_ids_label_rev_index_1107.py > make_NER_ids_label_rev_index_1107.py_21.11.07-1.log & # 일반적인 단어 정제함
+nohup python -u make_NER_ids_label_rev_index_1112.py > make_NER_ids_label_rev_index_1112.py_21.11.14-1.log &
+python make_NER_ids_label_rev_index_1112.py 2>&1 tee -a make_NER_ids_label_rev_index_1112.py_21.11.14-1.log
+nohup python -u make_NER_ids_label_rev_index_1112.py > make_NER_ids_label_rev_index_1112.py_21.11.14-1.log &
+nohup python -u make_NER_ids_label_rev_index_1112.py > make_NER_ids_label_rev_index_1112.py_21.11.17-1.log &
+nohup python -u make_NER_ids_label_rev_index_1118.py > make_NER_ids_label_rev_index_1118.py_21.11.21-1.log &
+
+nohup python -u make_NER_ids_label_rev_index_220212.py > make_NER_ids_label_rev_index_220212.py_22.2.13-1.log &
+nohup python -u make_NER_ids_label_rev_index_220212.py > make_NER_ids_label_rev_index_220212.py_22.2.13-2.log &
+nohup python -u make_NER_ids_label_rev_index_220214.py > make_NER_ids_label_rev_index_220214.py_22.2.14-1.log & # ner_to_index_rev_220214.json, shuffle 사용
+nohup python -u make_NER_ids_label_rev_index_220214.py > make_NER_ids_label_rev_index_220214.py_22.2.22-1.log & # summary 저장 길이를 max_len+20 으로 줄임
+nohup python -u make_NER_ids_label_rev_index_220224.py > make_NER_ids_label_rev_index_220224.py_22.2.25-1.log &
+nohup python -u make_NER_ids_label_rev_index_220227.py > make_NER_ids_label_rev_index_220227.py_22.2.27-1.log &
+nohup python -u make_NER_ids_label_rev_index_220227.py > make_NER_ids_label_rev_index_220227.py_22.2.27-2.log &
+nohup python -u make_NER_ids_label_rev_index_220228.py > make_NER_ids_label_rev_index_220228.py_22.3.1-1.log &
+nohup python -u make_NER_ids_label_rev_index_220306.py > make_NER_ids_label_rev_index_220306.py_22.3.8-1.log &
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# 키워드 빈도 구하기
+python keyword_freq.py 2>&1 | tee -a keyword_freq_21.11.02-1.log
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+# TF-IDF
+nohup python -u TF-IDF.py > TF-IDF.py_21.11.16-1.log &
+nohup python -u CF-IDF.py > CF-IDF.py_21.11.17-1.log &
+nohup python -u KF-CF-IDF.py > KF-CF-IDF.py_21.11.19-1.log &
+nohup python -u KF-CF-IDF.py > KF-CF-IDF.py_21.11.22-1.log &
+nohup python -u KF-CF-IDF.py > KF-CF-IDF.py_21.11.22-2.log &
+
